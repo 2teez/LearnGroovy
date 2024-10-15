@@ -9,3 +9,9 @@ println(langs.findAll {it.length() >= 3}.join " ")
 langs.each {println it}
 
 8.times {println it+1 + " howdy!"}
+
+println(langs.collect() { it.toUpperCase() })
+println(langs)
+
+def evened = {x -> x % 2 == 0}
+println evened.getClass()
