@@ -6,6 +6,7 @@ person.firstName = "omit"
 person.lastName = "programs"
 
 println "$person.firstName - $person.lastName"
+//println "${person?.nickNamed}"
 
 //@TypeChecked
 //@CompileStatic
