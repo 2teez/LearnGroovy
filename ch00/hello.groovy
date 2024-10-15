@@ -1,3 +1,6 @@
 print "Hello, groovy world\n"
 
-print(["groovy", "c++", "java"].findAll {it.length() < 4})
+def langs = ["groovy", "c++", "java"]
+println(langs)
+println(langs.findAll {it.length() < 4}.join " ")
+println(langs.findAll {it.length() >= 3}.join " ")
