@@ -22,7 +22,4 @@ class Foo {
 
 @TypeChecked
 @CompileStatic
-class Person {
-    def firstName = ""
-    def lastName = ""
-}
+class Person {String firstName; String lastName}
