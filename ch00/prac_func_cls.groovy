@@ -8,9 +8,19 @@ doing("walking")
 
 def doing(action="Flying") { println action}
 
+println new Pet()?.name  // prints null
+
+def pet = new Pet()
+pet?.name='ologbo'
+
+println "$pet, ${pet?.name}"
+
 @EqualsAndHashCode
 @TupleConstructor
 @ToString
 class Person {
   String firstName; String lastName;
 }
+
+@Canonical
+class Pet { String name }
