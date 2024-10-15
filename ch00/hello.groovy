@@ -7,3 +7,5 @@ println(langs.findAll {it.length() >= 3}.join " ")
 
 // print each using a type of foreach
 langs.each {println it}
+
+8.times {println it+1 + " howdy!"}
