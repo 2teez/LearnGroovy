@@ -21,3 +21,10 @@ def regina = new FixedBean(title: 'Groovy in Action')
 
 assert gina.title == 'Groovy in Action'
 assert gina == regina
+
+try {
+    regina.title = "Oops"
+    assert false, "Should not get here"
+} catch (ReadOnlyPropertyException excepted) {
+    println("Excepted Error: $excepted.message")
+}
