@@ -18,7 +18,7 @@ function usage() {
     echo "h:    Display this helper/usage function."
     echo "o:    Create a standalone groovy program file."
     echo "r:    Run a compiled groovy project or standalone program file."
-    "echo "s:    open and run jshell for groovy.""
+    echo "s:    open and run jshell for groovy."
     "echo "j:    Create a jar file from a compiled groovy project or standalone program file.""
     "echo "x:    Create, compile, and run a groovyfx program""
     echo ""
@@ -48,7 +48,7 @@ function check_ext(){
 [[ "$#" -lt 2 ]] && { usage; exit 1; }
 
 #option_string="c:d:g:o:r:j:s:x:h"
-option_string="d:o:r:h"
+option_string="d:o:r:s:h"
 while getopts "${option_string}" opt; do
 case "${opt}" in
     c)
@@ -122,8 +122,8 @@ case "${opt}" in
         #javac -d . "${filename}"  # compiles
         #java -cp . "com/practice/${file,,}/${file^}" # runs the program
         ;;
-    s) #echo "Launching jshell for groovy...."
-        #jshell
+    s) echo "Launching jshell for groovy...."
+        groovysh
         ;;
     j)
        # echo "Creating a jar file.."
