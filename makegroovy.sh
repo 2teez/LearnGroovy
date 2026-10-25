@@ -19,7 +19,7 @@ function usage() {
     echo "o:    Create a standalone groovy program file."
     echo "r:    Run a compiled groovy project or standalone program file."
     echo "s:    open and run jshell for groovy."
-    echo "S:    Run groovy file as script like."
+    echo "S:    Make a groovy file into a script and run as script like."
     "echo "j:    Create a jar file from a compiled groovy project or standalone program file.""
     "echo "x:    Create, compile, and run a groovyfx program""
     echo ""
@@ -133,6 +133,18 @@ case "${opt}" in
     S)
         echo "Running groovy as a script language..."
         filename="${OPTARG}"
+
+        first_line="$(head -n 1 -- "$filename")"
+
+        if [[ "${first_line}" != "#!/usr/bin/env groovy" ]]; then
+            # make a groovy script file and copy
+            # all the lines of the script to run
+            tmp_file="${filename%.*}.tmp"
+            echo "#!/usr/bin/env groovy" > "${tmp_file}"
+            cat "${filename}" >> "${tmp_file}"
+            mv "${tmp_file}" "${filename}"
+            chmod +x "${filename}"
+        fi
         groovy "${filename}"
         ;;
     j)
