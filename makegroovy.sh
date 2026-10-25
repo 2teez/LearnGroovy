@@ -14,7 +14,7 @@ function usage() {
     echo ""
     echo "c:    Compile a groovy project or standalone program file."
     echo "d:    Delete specified file or project file."
-    "echo "g:    Create a groovy generic project.""
+    echo "g:    Create a groovy generic project."
     echo "h:    Display this helper/usage function."
     echo "o:    Create a standalone groovy program file."
     echo "r:    Run a compiled groovy project or standalone program file."
@@ -54,7 +54,7 @@ function check_ext(){
 [[ "$#" -lt 2 ]] && { usage; exit 1; }
 
 #option_string="c:d:g:o:r:j:s:x:h"
-option_string="c:d:o:r:s:S:h"
+option_string="c:d:g:o:r:s:S:h"
 while getopts "${option_string}" opt; do
 case "${opt}" in
     c)
@@ -89,24 +89,24 @@ case "${opt}" in
         done
         ;;
     g)
-        #echo "Generating standalone groovy file.."
-        #filename="${OPTARG}"
-        #check_ext "${filename}"
-        #file="${filename%.*}"
-        #echo "${JAVA_PLAIN_FILE}" > "${filename^}"
-        #perl -pe "s|<packagename_place_holder>|${file,,}|;
-        #          s|<classname_place_holder>|${file^}|" "${filename^}" > "${filename}_tmp"
-        #mv "${filename}_tmp" "${filename^}"  # move the temporary file to the original filename
+        echo "Generating standalone groovy file.."
+        filename="${OPTARG}"
+        check_ext "${filename}"
+        file="${filename%.*}"
+
+        echo "${GROOVY_PLAIN_FILE}" > "${filename^}"
+        perl -pe "s|<packagename_place_holder>|${file,,}|" "${filename^}" > "${filename}_tmp"
+        mv "${filename}_tmp" "${filename^}" # move the temporary file to the original filename
 
         # make a directory with the package structure to move groovy file into
-        #groovy_project_path="${file^}/com/practice/${file,,}"
-        #mkdir -p "${groovy_project_path}"  # create the directory if it doesn't exist
-        #filename="${filename^}"
-        #mv "${filename}" "${groovy_project_path}/"  # move the groovy file into the directory
+        groovy_project_path="${file^}/com/practice/${file,,}"
+        mkdir -p "${groovy_project_path}"  # create the directory if it doesn't exist
+        filename="${filename^}"
+        mv "${filename}" "${groovy_project_path}/"  # move the groovy file into the directory
 
-        #cd "${file^}" || exit
-        #javac -d out "com/practice/${file,,}/${filename}"
-        #java -cp out "com.practice.${file,,}.${file^}"
+        cd "${file^}" || exit
+        groovyc -d out "com/practice/${file,,}/${filename}"
+        java -cp ".:${groovy_home_dir}/lib/*" "com.practice.${file,,}.${file^}"
         ;;
     o)
         echo "Generating standalone groovy file.."
