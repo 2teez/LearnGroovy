@@ -19,6 +19,7 @@ function usage() {
     echo "o:    Create a standalone groovy program file."
     echo "r:    Run a compiled groovy project or standalone program file."
     echo "s:    open and run jshell for groovy."
+    echo "S:    Run groovy file as script like."
     "echo "j:    Create a jar file from a compiled groovy project or standalone program file.""
     "echo "x:    Create, compile, and run a groovyfx program""
     echo ""
@@ -53,7 +54,7 @@ function check_ext(){
 [[ "$#" -lt 2 ]] && { usage; exit 1; }
 
 #option_string="c:d:g:o:r:j:s:x:h"
-option_string="c:d:o:r:s:h"
+option_string="c:d:o:r:s:S:h"
 while getopts "${option_string}" opt; do
 case "${opt}" in
     c)
@@ -128,6 +129,11 @@ case "${opt}" in
         ;;
     s) echo "Launching groovy shell...."
         groovysh
+        ;;
+    S)
+        echo "Running groovy as a script language..."
+        filename="${OPTARG}"
+        groovy "${filename}"
         ;;
     j)
        # echo "Creating a jar file.."
