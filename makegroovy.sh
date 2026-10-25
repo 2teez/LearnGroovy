@@ -89,7 +89,7 @@ case "${opt}" in
         done
         ;;
     g)
-        echo "Generating standalone groovy file.."
+        echo "Generating groovy generic project.."
         filename="${OPTARG}"
         check_ext "${filename}"
         file="${filename%.*}"
