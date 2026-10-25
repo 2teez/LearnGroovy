@@ -12,7 +12,7 @@ function usage() {
     echo "Options Available"
     echo "-----------------"
     echo ""
-    "echo "c:    Compile a groovy project or standalone program file.""
+    echo "c:    Compile a groovy project or standalone program file."
     echo "d:    Delete specified file or project file."
     "echo "g:    Create a groovy generic project.""
     echo "h:    Display this helper/usage function."
@@ -26,13 +26,18 @@ function usage() {
 
 filename=
 
+# get groovy system path
+groovy_home_dir="$(groovy -e 'println System.getProperty("groovy.home")')"
 
 # debug function
 function debug() {
     echo "debug: ${*}"; exit;
 }
 
-GROOVY_PLAIN_FILE="println \"Starts Here!.\""
+GROOVY_PLAIN_FILE="package com.practice.<packagename_place_holder>;
+
+println \"Start Here\";
+"
 
 
 function check_ext(){
@@ -48,15 +53,15 @@ function check_ext(){
 [[ "$#" -lt 2 ]] && { usage; exit 1; }
 
 #option_string="c:d:g:o:r:j:s:x:h"
-option_string="d:o:r:s:h"
+option_string="c:d:o:r:s:h"
 while getopts "${option_string}" opt; do
 case "${opt}" in
     c)
-        # echo "Compiling a groovy program.."
-        # filename="${OPTARG}"
-        # check_ext "${filename}"
-        # file="${filename%.*}"
-        # javac -d . "${filename}"  # compiles
+        echo "Compiling a groovy program.."
+        filename="${OPTARG}"
+        check_ext "${filename}"
+        file="${filename%.*}"
+        groovyc -d . "${filename}"  # compiles
         ;;
     d)
         echo "Deleting groovy file.."
@@ -108,21 +113,20 @@ case "${opt}" in
         check_ext "${filename}"
         file="${filename%.*}"
         echo "${GROOVY_PLAIN_FILE}" > "${filename^}"
-        perl -pe "s|<packagename_place_holder>|${file,,}|;
-                  s|<classname_place_holder>|${file^}|" "${filename^}" > "${filename}_tmp"
+        perl -pe "s|<packagename_place_holder>|${file,,}|" "${filename^}" > "${filename}_tmp"
         mv "${filename}_tmp" "${filename^}"
-        #javac -d . "${filename}"
-        #java -cp . "com.practice.${file,,}.${file^}"
+        groovyc -d . "${filename^}"
+        java -cp ".:${groovy_home_dir}/lib/*" "com.practice.${file,,}.${file^}"
         ;;
     r)
         echo "Running a groovy program.."
         filename="${OPTARG}"
         check_ext "${filename}"
         file="${filename%.*}"
-        #javac -d . "${filename}"  # compiles
-        #java -cp . "com/practice/${file,,}/${file^}" # runs the program
+        groovyc -d . "${filename^}"
+        java -cp ".:${groovy_home_dir}/lib/*" "com.practice.${file,,}.${file^}"
         ;;
-    s) echo "Launching jshell for groovy...."
+    s) echo "Launching groovy shell...."
         groovysh
         ;;
     j)
