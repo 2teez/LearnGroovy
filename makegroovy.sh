@@ -124,6 +124,16 @@ case "${opt}" in
         filename="${OPTARG}"
         check_ext "${filename}"
         file="${filename%.*}"
+
+        # check if a groovy file is a script
+        # remove the shebang and compile it
+        first_line="$(head -n 1 -- "$filename")"
+        if [[ "${first_line}" == "#!/usr/bin/env groovy" ]]; then
+            tmp_file="${filename%.*}.tmp"
+            tail -n +2 -- "$filename" > "${tmp_file}"
+            mv "${tmp_file}" "${filename}"
+            chmod -x "${filename}"
+        fi
         groovyc -d . "${filename^}"
         java -cp ".:${groovy_home_dir}/lib/*" "com.practice.${file,,}.${file^}"
         ;;
