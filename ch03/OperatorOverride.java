@@ -1,5 +1,7 @@
 package com.practice.operatoroverride;
 
+import com.practice.newmoney.NewMoney;
+
 class OperatorOverride {
 
     public static void main(String[] args) {
@@ -12,6 +14,11 @@ class OperatorOverride {
         final var buckVal = MoneyValue.getMoneyInstance(1, "Naira");
         final var buckVal2 = MoneyValue.getMoneyInstance(1, "Naira");
         System.out.println(buckVal == buckVal2); // false why?
+
+        //
+        final var buckVal4 = new NewMoney(1, "Naira");
+        final var buckVal5 = new NewMoney(1, "Naira");
+        System.out.println(buckVal4.equals(buckVal5)); // false why?
     }
 }
 
@@ -55,6 +62,11 @@ final class MoneyValue {
     }
 
     @Override
+    public int hashCode() {
+        return java.util.Objects.hash(this.amount, this.currency);
+    }
+
+    @Override
     public String toString() {
         return String.format("%d %s", this.amount, this.currency);
     }
@@ -90,6 +102,11 @@ final class Money {
             this.amount == another.amount &&
             this.currency.equals(another.currency)
         );
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(this.amount, this.currency);
     }
 
     @Override
