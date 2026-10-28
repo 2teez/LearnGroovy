@@ -20,7 +20,7 @@ function usage() {
     echo "r:    Run a compiled groovy project or standalone program file."
     echo "s:    open and run jshell for groovy."
     echo "S:    Make a groovy file into a script and run as script like."
-    "echo "j:    Create a jar file from a compiled groovy project or standalone program file.""
+    echo "j:    Create a standalone java file"
     "echo "x:    Create, compile, and run a groovyfx program""
     echo ""
 }
@@ -40,12 +40,25 @@ GROOVY_PLAIN_FILE="package com.practice.<packagename_place_holder>;
 println \"Start Here\";
 "
 
+JAVA_PLAIN_FILE="package com.practice.<packagename_place_holder>;
+
+public class <classname_place_holder> {
+
+    public static void main(String[] args) {
+        System.out.println(\"Start Here\");
+    }
+}
+"
+
 
 function check_ext(){
     file="${1}"
+    typer="${2}"
     filename="${file%.*}"
     extname="${file##*.}"
-    [[ "${filename}" = "${extname}" ]] && file="${file}.groovy"
+    file_extension="groovy"
+    [[ "${typer}" == "java" ]] && file_extension="java"
+    [[ "${filename}" = "${extname}" ]] && file="${file}.${file_extension}"
     filename="${file}"
 }
 
@@ -54,7 +67,7 @@ function check_ext(){
 [[ "$#" -lt 2 ]] && { usage; exit 1; }
 
 #option_string="c:d:g:o:r:j:s:x:h"
-option_string="c:d:g:o:r:s:S:h"
+option_string="c:d:g:j:o:r:s:S:h"
 while getopts "${option_string}" opt; do
 case "${opt}" in
     c)
@@ -158,16 +171,16 @@ case "${opt}" in
         groovy "${filename}"
         ;;
     j)
-       # echo "Creating a jar file.."
-        # make a manifest file
-        #filename="${OPTARG}"
-        #check_ext "${filename}"
-        #file="${filename%.*}"
-        #javac -d . *.groovy
-        #echo "Main-Class: com.practice.${file,,}.${file^}" > manifest.txt
-        #echo "" >> manifest.txt
-        #jar cvfm "${file}.jar" manifest.txt com
-        #java -jar "${file}.jar"
+        echo "Generating standalone java file.."
+        filename="${OPTARG}"
+        check_ext "${filename}" "java"
+        file="${filename%.*}"
+        echo "${JAVA_PLAIN_FILE}" > "${filename^}"
+        perl -pe "s|<packagename_place_holder>|${file,,}|;
+                  s|<classname_place_holder>|${file^}|" "${filename^}" > "${filename}_tmp"
+        mv "${filename}_tmp" "${filename^}"
+        javac -d . "${filename}"
+        java -cp . "com.practice.${file,,}.${file^}"
         ;;
     x)
         #echo "Creating, compiling, and running a javafx program.."
